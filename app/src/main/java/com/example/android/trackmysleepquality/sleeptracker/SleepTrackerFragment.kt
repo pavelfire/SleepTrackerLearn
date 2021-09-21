@@ -25,10 +25,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepTrackerBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlin.time.measureTimedValue
 
 // coroutines read and translate
 // https://developer.android.com/codelabs/kotlin-android-training-coroutines-and-room#4
@@ -92,6 +94,17 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
+        // три колонки вертикальная прокрутка
+        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+
+        // Линейный список вертикальная прокрутка
+        //val manager = GridLayoutManager(activity, 1)
+
+        // Горизонтальная прокрутка
+        //val manager = GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false)
+
+
+        binding.sleepList.layoutManager = manager
 
         binding.setLifecycleOwner(this)
         return binding.root
