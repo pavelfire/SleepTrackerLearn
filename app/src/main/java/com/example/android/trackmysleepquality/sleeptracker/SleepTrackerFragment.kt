@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -34,6 +35,10 @@ import kotlin.time.measureTimedValue
 
 // coroutines read and translate
 // https://developer.android.com/codelabs/kotlin-android-training-coroutines-and-room#4
+
+// Interacting with RecyclerView Items
+//https://developer.android.com/codelabs/kotlin-android-training-interacting-with-items#0
+
 /**
  * A fragment with buttons to record start and end times for sleep, which are saved in
  * a database. Cumulative data is displayed in a simple scrollable TextView.
@@ -86,11 +91,28 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
-        val adapter = SleepNightAdapter()
+        val adapter = SleepNightAdapter(SleepNightListener { nightId ->
+           //Toast.makeText(context, "${nightId}", Toast.LENGTH_LONG).show()
+
+            sleepTrackerViewModel.onSleepNightClicked(nightId)
+
+        })
+
+
+
         binding.sleepList.adapter = adapter
         sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer{
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+
+        sleepTrackerViewModel.navigateToSleepDetail.observe(viewLifecycleOwner, Observer {night ->
+            night?.let{
+                this.findNavController().navigate(
+                        SleepTrackerFragmentDirections
+                                .actionSleepTrackerFragmentToSleepDetailFragment(night))
+                sleepTrackerViewModel.onSleepDetailNavigated()
             }
         })
 
